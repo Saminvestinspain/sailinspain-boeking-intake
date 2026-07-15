@@ -169,13 +169,11 @@
     }
 
     /* ── Button ── */
-    .btn-generate {
+    .btn-generate, .btn-submit {
       width: 100%;
       padding: 14px;
       font-size: 15px;
       font-weight: 600;
-      background: var(--gold);
-      color: var(--dark);
       border: none;
       border-radius: var(--radius);
       cursor: pointer;
@@ -187,8 +185,32 @@
       gap: 8px;
       -webkit-tap-highlight-color: transparent;
     }
-    .btn-generate:hover  { opacity: 0.88; }
-    .btn-generate:active { transform: scale(0.98); }
+    .btn-generate { background: var(--gold); color: var(--dark); }
+    .btn-submit   { background: #2ecc71; color: #fff; margin-top: 4px; }
+    .btn-submit:disabled { background: #555; cursor: not-allowed; opacity: 0.6; }
+    .btn-generate:hover, .btn-submit:hover  { opacity: 0.88; }
+    .btn-generate:active, .btn-submit:active { transform: scale(0.98); }
+
+    /* ── Status message ── */
+    .submit-status {
+      text-align: center;
+      padding: 12px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      display: none;
+    }
+    .submit-status.success {
+      background: rgba(46,204,113,0.12);
+      border: 1px solid rgba(46,204,113,0.4);
+      color: #2ecc71;
+      display: block;
+    }
+    .submit-status.error {
+      background: rgba(231,76,60,0.12);
+      border: 1px solid rgba(231,76,60,0.4);
+      color: #e74c3c;
+      display: block;
+    }
 
     /* ── Output ── */
     .output-wrap {
@@ -374,11 +396,16 @@
 
     <div class="output-wrap" id="out-wrap">
       <div class="output-head">
-        <span><i class="fa-solid fa-check" style="margin-right:5px"></i>Klaar — plak naar Niels of Sam</span>
+        <span><i class="fa-solid fa-check" style="margin-right:5px"></i>Klaar — controleer en verzend</span>
         <button class="btn-copy" onclick="doCopy()"><i class="fa-solid fa-copy"></i> Kopieer</button>
       </div>
       <pre class="output-pre" id="out-pre"></pre>
     </div>
+
+    <button class="btn-submit" id="btn-submit" onclick="submitToSheet()" style="display:none">
+      <i class="fa-solid fa-paper-plane"></i> Verzend boeking
+    </button>
+    <div class="submit-status" id="submit-status"></div>
 
   </div>
 
@@ -516,6 +543,9 @@
       document.getElementById('out-pre').textContent = o;
       const wrap = document.getElementById('out-wrap');
       wrap.style.display = 'block';
+      document.getElementById('btn-submit').style.display = 'flex';
+      document.getElementById('submit-status').className = 'submit-status';
+      document.getElementById('submit-status').style.display = 'none';
       setTimeout(() => wrap.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
     }
 
@@ -538,6 +568,61 @@
       const btn = document.querySelector('.btn-copy');
       btn.innerHTML = '<i class="fa-solid fa-check"></i> Gekopieerd!';
       setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-copy"></i> Kopieer'; }, 2000);
+    }
+
+    // ── Verzend naar Google Sheets ──
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyL6zkSubGeKpEsVlZAdVWbBg_RePKGggPj7US-ZjQ0whUelexHXhnGNEsxS871vjIV/exec';
+
+    function submitToSheet() {
+      const btn = document.getElementById('btn-submit');
+      const status = document.getElementById('submit-status');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verzenden...';
+
+      const data = {
+        name:      document.getElementById('name').value,
+        idnr:      document.getElementById('idnr').value,
+        address:   document.getElementById('address').value,
+        ages:      document.getElementById('ages').value,
+        port:      getRadio('port'),
+        guests:    document.getElementById('guests').value,
+        dateFrom:  document.getElementById('date-from').value,
+        dateTo:    document.getElementById('date-to').value,
+        timeStart: document.getElementById('tstart').value,
+        timeEnd:   document.getElementById('tend').value,
+        base:      document.getElementById('base').value,
+        discount:  document.getElementById('discount').value,
+        total:     document.getElementById('total').value,
+        crew:      document.getElementById('crew').value,
+        catcost:   document.getElementById('catcost').value,
+        deposit:   document.getElementById('deposit').value,
+        catering:  getRadio('cat'),
+        foods:     getChecked('food-grp').join(', '),
+        drinks:    getChecked('drinks-grp').join(', '),
+        wine:      document.getElementById('wine').value,
+        bubbly:    document.getElementById('bubbly').value,
+        special:   document.getElementById('special').value,
+        notes:     document.getElementById('notes').value
+      };
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        status.className = 'submit-status success';
+        status.innerHTML = '<i class="fa-solid fa-check-circle"></i> Boeking verzonden! Data staat in Google Sheets en e-mail is verstuurd.';
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Verzonden!';
+        btn.style.background = '#27ae60';
+      })
+      .catch(() => {
+        status.className = 'submit-status error';
+        status.innerHTML = '<i class="fa-solid fa-exclamation-circle"></i> Verzenden mislukt. Controleer je internetverbinding.';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Verzend boeking';
+      });
     }
   </script>
 </body>
