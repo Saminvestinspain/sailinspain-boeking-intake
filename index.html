@@ -271,7 +271,7 @@
     <div class="logo-mark"><i class="fa-solid fa-sailboat"></i></div>
     <div>
       <h1>Sail in Spain — Boeking intake</h1>
-      <p>Vul alle gegevens in en druk onderaan op "Genereer contractinfo" en plak deze naar Niels of Sam</p>
+      <p>Vul alle gegevens in en druk onderaan op "Verzend boeking"</p>
     </div>
   </div>
 
@@ -390,19 +390,7 @@
       </div>
     </div>
 
-    <button class="btn-generate" onclick="generate()">
-      <i class="fa-solid fa-file-lines"></i> Genereer contractinfo
-    </button>
-
-    <div class="output-wrap" id="out-wrap">
-      <div class="output-head">
-        <span><i class="fa-solid fa-check" style="margin-right:5px"></i>Klaar — controleer en verzend</span>
-        <button class="btn-copy" onclick="doCopy()"><i class="fa-solid fa-copy"></i> Kopieer</button>
-      </div>
-      <pre class="output-pre" id="out-pre"></pre>
-    </div>
-
-    <button class="btn-submit" id="btn-submit" onclick="submitToSheet()" style="display:none">
+    <button class="btn-submit" id="btn-submit" onclick="submitToSheet()">
       <i class="fa-solid fa-paper-plane"></i> Verzend boeking
     </button>
     <div class="submit-status" id="submit-status"></div>
