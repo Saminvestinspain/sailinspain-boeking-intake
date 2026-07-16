@@ -328,9 +328,14 @@
       <div class="section-head"><i class="fa-solid fa-euro-sign"></i><span>Prijs & betaling</span></div>
       <div class="section-body">
         <div class="row3">
-          <div class="field"><label>Basisprijs (€)</label><input type="number" id="base" placeholder="3600" readonly></div>
-          <div class="field"><label>Crew cost (€)</label><input type="number" id="crew" placeholder="500" readonly></div>
-          <div class="field"><label>Fuel forfait (€)</label><input type="number" id="fuel" placeholder="75" readonly></div>
+          <div class="field"><label>Basisprijs (€)</label><input type="number" id="base" placeholder="-" readonly></div>
+          <div class="field"><label>Crew cost (€)</label><input type="number" id="crew" placeholder="-" readonly></div>
+          <div class="field"><label>Fuel forfait (€)</label><input type="number" id="fuel" placeholder="-" readonly></div>
+        </div>
+        <div class="row3">
+          <div class="field"><label style="color:var(--gold);font-weight:600">Totaal (€)</label><input type="number" id="total" placeholder="-" readonly style="border-color:var(--gold);color:var(--gold-l);font-weight:600"></div>
+          <div class="field"></div>
+          <div class="field"></div>
         </div>
       </div>
     </div>
@@ -488,6 +493,7 @@
       document.getElementById('base').value = basePrice;
       document.getElementById('crew').value = crew;
       document.getElementById('fuel').value = fuel;
+      document.getElementById('total').value = basePrice + crew + fuel;
 
       priceInfo.innerHTML = '<strong>' + getSeasonLabel(season) + '</strong> — ' + capped + (capped === 1 ? ' dag' : ' dagen') + ' charter';
       priceInfo.style.display = 'block';
