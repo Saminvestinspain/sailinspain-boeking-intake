@@ -286,16 +286,7 @@
           <div class="field"><label>ID / Paspoortnummer</label><input type="text" id="idnr" placeholder="bv. 554812612" autocomplete="off"></div>
         </div>
         <div class="field"><label>Adres</label><input type="text" id="address" placeholder="Straat, postcode, stad, land" autocomplete="off"></div>
-        <div class="row2">
-          <div class="field"><label>Leeftijden gasten</label><input type="text" id="ages" placeholder="bv. 35, 38, 12, 10" autocomplete="off"></div>
-          <div class="field">
-            <label>Catering gewenst?</label>
-            <div class="pill-group" id="cat-grp">
-              <label class="pill" onclick="setPill('cat','ja',this)"><input type="radio" name="cat" value="ja"> Ja</label>
-              <label class="pill" onclick="setPill('cat','nee',this)"><input type="radio" name="cat" value="nee"> Nee</label>
-            </div>
-          </div>
-        </div>
+        <div class="field"><label>Leeftijden gasten</label><input type="text" id="ages" placeholder="bv. 35, 38, 12, 10" autocomplete="off"></div>
       </div>
     </div>
 
@@ -312,6 +303,13 @@
             </div>
           </div>
           <div class="field"><label>Aantal gasten</label><input type="number" id="guests" min="1" max="12" placeholder="4"></div>
+        </div>
+        <div class="field">
+          <label>Catering gewenst?</label>
+          <div class="pill-group" id="cat-grp">
+            <label class="pill" onclick="setPill('cat','ja',this)"><input type="radio" name="cat" value="ja"> Ja</label>
+            <label class="pill" onclick="setPill('cat','nee',this)"><input type="radio" name="cat" value="nee"> Nee</label>
+          </div>
         </div>
         <div class="row4">
           <div class="field"><label>Startdatum</label><input type="date" id="date-from" oninput="calcDays()"></div>
