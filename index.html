@@ -306,6 +306,14 @@
       <div class="section-head"><i class="fa-solid fa-calendar-days"></i><span>Charter details</span></div>
       <div class="section-body">
         <div class="field">
+          <label>Trip type / Reistype</label>
+          <div class="pill-group" id="trip-grp">
+            <label class="pill" onclick="setPill('trip','daytrip',this)"><input type="radio" name="trip" value="daytrip"> Day charter</label>
+            <label class="pill" onclick="setPill('trip','half',this)"><input type="radio" name="trip" value="half"> ½ day charter</label>
+            <label class="pill" onclick="setPill('trip','sunset',this)"><input type="radio" name="trip" value="sunset"> Sunset charter</label>
+          </div>
+        </div>
+        <div class="field">
           <label>Departure port / Vertrekhaven</label>
           <div class="pill-group" id="port-grp">
             <label class="pill" onclick="setPill('port','Sotogrande',this)"><input type="radio" name="port" value="Sotogrande"> Sotogrande</label>
@@ -412,6 +420,9 @@
       if (name === 'cat') {
         document.getElementById('catering-section').style.display = val === 'ja' ? 'block' : 'none';
       }
+      if (name === 'trip') {
+        calcPrice();
+      }
     }
 
     function togCb(el, ev) {
@@ -445,10 +456,11 @@
       4: { low: 4749, mid: 6190, startend: 7189, high: 8399 },
       5: { low: 5430, mid: 6990, startend: 8099, high: 9399 },
       6: { low: 5999, mid: 7777, startend: 8999, high: 10899 },
-      7: { low: 6000, mid: 7800, startend: 9000, high: 10800 }
+      7: { low: 6000, mid: 7800, startend: 9000, high: 10800 },
     };
     const FUEL  = { 1: 75, 2: 150, 3: 225, 4: 300, 5: 375, 6: 425, 7: 450 };
     const CREW  = { 1: 500, 2: 1000, 3: 1500, 4: 2000, 5: 2500, 6: 3000, 7: 3500 };
+    const HALF_RATE = 0.6;
 
     function getSeason(month) {
       if ([0,1,2,10,11].includes(month)) return 'low';
@@ -487,23 +499,36 @@
     function calcPrice() {
       const from = document.getElementById('date-from').value;
       const to   = document.getElementById('date-to').value;
+      const tripType = getRadio('trip');
       const priceInfo = document.getElementById('price-info');
       if (!from) { priceInfo.style.display = 'none'; return; }
 
-      const days = to ? Math.max(1, Math.round((new Date(to) - new Date(from)) / 86400000)) : 1;
-      const capped = Math.min(days, 7);
+      const isHalf = (tripType === 'half' || tripType === 'sunset');
       const month = new Date(from).getMonth();
       const season = getSeason(month);
-      const basePrice = PRICES[capped] ? PRICES[capped][season] : PRICES[7][season];
-      const fuel = FUEL[capped] || FUEL[7];
-      const crew = CREW[capped] || CREW[7];
+
+      const days = to ? Math.max(1, Math.round((new Date(to) - new Date(from)) / 86400000)) : 1;
+      const capped = Math.min(days, 7);
+      let label, basePrice, fuel, crew;
+
+      if (isHalf) {
+        label = tripType === 'sunset' ? 'Sunset charter' : '½ day charter';
+        basePrice = Math.round(PRICES[1][season] * HALF_RATE);
+        fuel = FUEL[1];
+        crew = Math.round(CREW[1] * HALF_RATE);
+      } else {
+        label = capped + ' day charter';
+        basePrice = PRICES[capped] ? PRICES[capped][season] : PRICES[7][season];
+        fuel = FUEL[capped] || FUEL[7];
+        crew = CREW[capped] || CREW[7];
+      }
 
       document.getElementById('base').value = basePrice;
       document.getElementById('crew').value = crew;
       document.getElementById('fuel').value = fuel;
       document.getElementById('total').value = basePrice + crew + fuel;
 
-      priceInfo.innerHTML = '<strong>' + getSeasonLabel(season) + '</strong> — ' + capped + ' day charter';
+      priceInfo.innerHTML = '<strong>' + getSeasonLabel(season) + '</strong> — ' + label;
       priceInfo.style.display = 'block';
     }
 
@@ -630,6 +655,7 @@
         idnr:      document.getElementById('idnr').value,
         address:   document.getElementById('address').value,
         ages:      document.getElementById('ages').value,
+        tripType:  getRadio('trip'),
         port:      getRadio('port'),
         guests:    document.getElementById('guests').value,
         dateFrom:  document.getElementById('date-from').value,
@@ -639,6 +665,7 @@
         base:      document.getElementById('base').value,
         crew:      document.getElementById('crew').value,
         fuel:      document.getElementById('fuel').value,
+        total:     document.getElementById('total').value,
         catering:  getRadio('cat'),
         foods:     getChecked('food-grp').join(', '),
         drinks:    getChecked('drinks-grp').join(', '),

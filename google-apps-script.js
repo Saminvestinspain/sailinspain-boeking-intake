@@ -26,11 +26,10 @@ function doPost(e) {
       sheet = ss.insertSheet('Boekingen');
       sheet.appendRow([
         'Timestamp', 'Naam', 'ID/Paspoort', 'Adres', 'Leeftijden',
-        'Vertrekhaven', 'Gasten', 'Startdatum', 'Einddatum',
-        'Starttijd', 'Eindtijd', 'Basisprijs', 'Korting',
-        'Totaal', 'Crew cost', 'Catering cost', 'Waarborg',
+        'Trip type', 'Vertrekhaven', 'Gasten', 'Startdatum', 'Einddatum',
+        'Starttijd', 'Eindtijd', 'Basisprijs', 'Crew cost', 'Fuel', 'Totaal',
         'Catering', 'Gerechten', 'Dranken', 'Wijn detail',
-        'Cava/Champagne', 'Speciale wensen', 'Interne notities'
+        'Cava/Champagne', 'Speciale wensen', 'Opmerkingen'
       ]);
     }
 
@@ -41,6 +40,7 @@ function doPost(e) {
       data.idnr || '',
       data.address || '',
       data.ages || '',
+      data.tripType || '',
       data.port || '',
       data.guests || '',
       data.dateFrom || '',
@@ -48,11 +48,9 @@ function doPost(e) {
       data.timeStart || '',
       data.timeEnd || '',
       data.base || '',
-      data.discount || '',
-      data.total || '',
       data.crew || '',
-      data.catcost || '',
-      data.deposit || '',
+      data.fuel || '',
+      data.total || '',
       data.catering || '',
       data.foods || '',
       data.drinks || '',
@@ -88,6 +86,7 @@ function formatEmail(d) {
   msg += 'Leeftijden:    ' + (d.ages || '-') + '\n\n';
 
   msg += '--- CHARTER ---\n';
+  msg += 'Trip type:     ' + (d.tripType || '-') + '\n';
   msg += 'Vertrekhaven:  ' + (d.port || '-') + '\n';
   msg += 'Gasten:        ' + (d.guests || '-') + '\n';
   msg += 'Datum:         ' + (d.dateFrom || '-');
@@ -97,11 +96,9 @@ function formatEmail(d) {
 
   msg += '--- PRIJS ---\n';
   msg += 'Basisprijs:    € ' + (d.base || '-') + '\n';
-  msg += 'Korting:       ' + (d.discount || '-') + '\n';
-  msg += 'Totaal:        € ' + (d.total || '-') + '\n';
   msg += 'Crew cost:     € ' + (d.crew || '-') + '\n';
-  msg += 'Catering cost: € ' + (d.catcost || '-') + '\n';
-  msg += 'Waarborg:      € ' + (d.deposit || '0') + '\n\n';
+  msg += 'Fuel:          € ' + (d.fuel || '-') + '\n';
+  msg += 'Totaal:        € ' + (d.total || '-') + '\n\n';
 
   msg += '--- CATERING & DRANKEN ---\n';
   msg += 'Catering:      ' + (d.catering || '-') + '\n';
