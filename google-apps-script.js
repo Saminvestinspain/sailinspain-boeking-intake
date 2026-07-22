@@ -25,7 +25,7 @@ function doPost(e) {
     if (!sheet) {
       sheet = ss.insertSheet('Boekingen');
       sheet.appendRow([
-        'Timestamp', 'Naam', 'ID/Paspoort', 'Adres', 'Leeftijden',
+        'Timestamp', 'Naam', 'Email', 'Telefoon', 'ID/Paspoort', 'Adres', 'Leeftijden',
         'Trip type', 'Vertrekhaven', 'Gasten', 'Startdatum', 'Einddatum',
         'Starttijd', 'Eindtijd', 'Basisprijs', 'Crew cost', 'Fuel', 'Totaal',
         'Catering', 'Gerechten', 'Dranken', 'Wijn detail',
@@ -37,6 +37,8 @@ function doPost(e) {
     sheet.appendRow([
       new Date().toLocaleString('nl-BE'),
       data.name || '',
+      data.email || '',
+      data.phone || '',
       data.idnr || '',
       data.address || '',
       data.ages || '',
@@ -81,6 +83,8 @@ function formatEmail(d) {
 
   msg += '--- KLANT ---\n';
   msg += 'Naam:          ' + (d.name || '-') + '\n';
+  msg += 'Email:         ' + (d.email || '-') + '\n';
+  msg += 'Telefoon:      ' + (d.phone || '-') + '\n';
   msg += 'Adres:         ' + (d.address || '-') + '\n';
   msg += 'ID/Paspoort:   ' + (d.idnr || '-') + '\n';
   msg += 'Leeftijden:    ' + (d.ages || '-') + '\n\n';
